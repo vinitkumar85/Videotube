@@ -1,5 +1,3 @@
-name: Push Docker Image to ECR
-
 on:
   push:
     branches:
@@ -15,7 +13,7 @@ jobs:
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@v2
         with:
-          mask-password: 'false'
+          region: us-east-1  # Specify the AWS region here
 
       - name: Build and push Docker image
         run: |
