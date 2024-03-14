@@ -1,0 +1,29 @@
+name: Push Docker Image to ECR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          aws-region: us-east-1
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t videotube .
+          docker tag videotube 005635687118.dkr.ecr.us-east-1.amazonaws.com/videotube:latest
+          docker push 005635687118.dkr.ecr.us-east-1.amazonaws.com/videotube:latest
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
