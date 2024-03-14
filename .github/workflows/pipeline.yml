@@ -10,6 +10,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Debug AWS_REGION
+        run: |
+          echo "AWS_REGION: ${{ secrets.AWS_REGION }}"
+
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@v2
         with:
@@ -28,7 +32,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1 
 
-      - name: Debug AWS_REGION
-        run: |
-          echo "AWS_REGION: ${{ secrets.AWS_REGION }}"
 
