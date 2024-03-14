@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { ConfigService } from '@nestjs/config';
@@ -28,7 +28,19 @@ export class VideoService {
     return newVideo.save();
   }
 
-  async uploadFile(file, body) {
+  async uploadFile(file, body, maxSize: number) {
+    if (!this.isFileSizeValid(file.size, maxSize)) {
+      throw new BadRequestException(
+        `File size exceeds the limit of ${maxSize / (1024 * 1024)} MB.`,
+      );
+    }
+
+    if (!this.isValidVideoFormat(file.mimetype)) {
+      throw new BadRequestException(
+        'Invalid file format. Only AVI and MPEG video files are allowed.',
+      );
+    }
+
     console.log(file);
     const { originalname } = file;
 
@@ -39,6 +51,18 @@ export class VideoService {
       file.mimetype,
       body,
     );
+  }
+
+  isValidVideoFormat(mimetype: string): boolean {
+    return (
+      mimetype === 'video/avi' ||
+      mimetype === 'video/mpeg' ||
+      mimetype === 'video/mp4'
+    );
+  }
+
+  isFileSizeValid(fileSize: number, maxSize: number): boolean {
+    return fileSize <= maxSize;
   }
 
   async s3_upload(file, bucket, name, mimetype, body) {

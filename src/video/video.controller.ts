@@ -20,7 +20,7 @@ export class VideoController {
     @UploadedFile() file: Express.Multer.File,
     @Body() body: CreateVideoDto,
   ) {
-    return this.videoService.uploadFile(file, body);
+    return this.videoService.uploadFile(file, body, 20 * 1024 * 1024);
   }
 
   @Get('videos')
