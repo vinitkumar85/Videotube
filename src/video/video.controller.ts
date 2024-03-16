@@ -27,4 +27,9 @@ export class VideoController {
   getAllVideos() {
     return this.videoService.findAllVideos();
   }
+
+  @Post('update/likes')
+  updateLikes(@Body() body: any) {
+    return this.videoService.updateLikes(body);
+  }
 }

@@ -95,4 +95,19 @@ export class VideoService {
       console.log(e);
     }
   }
+
+  async updateLikes(body: any): Promise<any> {
+    const { videoId, userId } = body;
+    try {
+      // Find the video by its ID and update the 'likes' array
+      await this.videoModel.updateOne(
+        { _id: videoId },
+        { $push: { likes: userId } },
+      );
+      return { message: `Video is liked by ${userId}` };
+    } catch (error) {
+      console.error('Error updating likes:', error);
+      throw new BadRequestException('Could not update likes.');
+    }
+  }
 }
